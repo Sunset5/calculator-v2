@@ -1,0 +1,137 @@
+* {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+:focus, :active {
+  outline: none;
+}
+
+a:focus, a:active {
+  outline: none;
+}
+
+nav, footer, header, aside {
+  display: block;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-size: 100%;
+  line-height: 1;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+input, button, textarea {
+  font-family: inherit;
+}
+
+input::-ms-clear {
+  display: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+a, a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+ul li {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+body {
+  height: auto;
+  font-size: 20px;
+  color: #fff;
+  background-color: rgba(155, 155, 155, 0.533);
+}
+
+.btn {
+  width: 75px;
+  height: 75px;
+  font-size: 40px;
+  color: #fff;
+  background-color: #4f4f4f;
+  border-radius: 50%;
+  transition: filter 0.3s ease-out;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+.btn:hover {
+  filter: brightness(1.2);
+}
+.btn:active {
+  filter: brightness(1);
+}
+
+.grey {
+  background-color: #919191;
+}
+
+.orange {
+  background-color: #e3ac34;
+}
+
+.calculator {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 375px;
+  height: 675px;
+  background-color: #000;
+  box-shadow: 0 0 20px 0 #000;
+  margin: 150px auto 0;
+  border-radius: 50px;
+}
+.calculator .result {
+  align-self: end;
+  font-size: 50px;
+  margin-right: 30px;
+}
+.calculator .buttons {
+  display: grid;
+  grid-template: "ac ps pr div" "sv ei ni mp" "fo fi si mi" "on tw th pl" "ze ze dot eq";
+  gap: 10px;
+  padding: 15px 20px 30px;
+}
+.calculator .buttons .zero {
+  grid-area: ze;
+  width: 97.5%;
+  border-radius: 40px;
+  text-align: left;
+  padding-left: 25px;
+}/*# sourceMappingURL=style.css.map */
