@@ -206,7 +206,7 @@ document.querySelector('.buttons').onclick = (event) => {
                 break;
         }
         firstNumber = String(firstNumber);
-        console.log(firstNumber, typeof firstNumber, sign, typeof sign, secondNumber, typeof secondNumber, out.textContent, typeof out.textContent, finish);
+        // console.log(firstNumber, typeof firstNumber, sign, typeof sign, secondNumber, typeof secondNumber, out.textContent, typeof out.textContent, finish);
         out.textContent = firstNumber;
         finish = true;
         finishSign = false; // Makes it possible to calculate by pressing the second sign
@@ -219,14 +219,9 @@ document.querySelector('.buttons').onclick = (event) => {
         if (firstNumber[firstNumber.length - 1] === '.' || firstNumber[firstNumber.length - 1] === '0') {
             // firstNumber = firstNumber.toString();
             let i = firstNumber.length - firstNumber.split('.')[0].length - 1;
-            console.log(0, i, firstNumber.length, firstNumber)
             while (firstNumber.length >= 13 || firstNumber[i] === '0') {
-                console.log(1, i, firstNumber.length, firstNumber)
-
                 firstNumber = (+firstNumber).toFixed(i - firstNumber.split('.')[0].length - 1); // rounding if the result has a dot or many zeros at the end
                 i--;
-                console.log(2, i, firstNumber.length, firstNumber)
-
             }
             // firstNumber = String(Math.round(+firstNumber));
             out.textContent = firstNumber;
