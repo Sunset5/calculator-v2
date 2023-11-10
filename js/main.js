@@ -85,14 +85,15 @@ document.querySelector('.buttons').onclick = (event) => {
         if (out.textContent === '0' && key !== '.') out.textContent = ''; // Deleting zeros at the beginning of input and adds 0 if it puts the first point
         // filling in the first number
         if (secondNumber === '' && sign === '') {
-            if (key === '.' && firstNumber === '') firstNumber += '0'; // adds 0 if it puts the first point 
             if (key === '.' && firstNumber.includes('.')) return; // if there is already one point, then it is no longer possible
+            else if (key === '.') firstNumber += '0'; // adds 0 if it puts the first point
+            if (out.textContent.includes('0') && !out.textContent.includes('.') && key === '0') return; // if he wants to put more than one zero and there is no point
             firstNumber += key;
             out.textContent += key;
         }
         // pressing any digit causes a reset for a new set after calculation
         else if (finish && !out.textContent.includes(' ')) {
-            firstNumber = key;
+            firstNumber = (key === '.') ? '0' + key : key;
             out.textContent = firstNumber;
             secondNumber = '';
             sign = '';
@@ -136,24 +137,28 @@ document.querySelector('.buttons').onclick = (event) => {
     }
 
     // Calculation
-    if (key === '=' || action.includes(key) && secondNumber !== '' && finishSign) {
+    if (key === '=' && finishSign || action.includes(key) && secondNumber !== '' && finishSign) {
         // if after the first input of the number presses the sign
         if (secondNumber === '') secondNumber = firstNumber;
         // calculation and display
         switch (sign) {
             case '+':
+                if (String((+firstNumber + +secondNumber)).length >= 13) return; // out limit of 13 characters
                 firstNumber = +firstNumber + +secondNumber;
                 break;
             case '-':
+                if (String((firstNumber - secondNumber)).length >= 13) return; // out limit of 13 characters
                 firstNumber -= secondNumber;
                 break;
             case 'X':
+                if (String((firstNumber * secondNumber)).length >= 13) return; // out limit of 13 characters
                 firstNumber *= secondNumber;
                 break;
             case '/':
+                if (String((firstNumber / secondNumber)).length >= 13) return; // out limit of 13 characters
                 firstNumber /= secondNumber;
                 // when div on 0 (infinity)
-                if (String(firstNumber) === 'NaN') {
+                if (firstNumber !== firstNumber || firstNumber === Infinity) {
                     out.textContent = 'Ошибка';
                     firstNumber = '';
                     secondNumber = '';
@@ -165,7 +170,6 @@ document.querySelector('.buttons').onclick = (event) => {
                 break;
         }
         firstNumber = String(firstNumber);
-        if (firstNumber.length >= 13) return; // out limit of 13 characters
         out.textContent = firstNumber;
         finish = true;
         finishSign = false; // Makes it possible to calculate by pressing the second sign
@@ -173,11 +177,16 @@ document.querySelector('.buttons').onclick = (event) => {
 
     // Input a sign
     if (action.includes(key) && !finishSign) {
-        if (firstNumber === '') firstNumber = out.textContent; // if he immediately presses the sign when the result is 0
+        if (firstNumber === '' && key !== '-') firstNumber = out.textContent; // if he immediately presses the sign when the result is 0
         // rounding the first number if there are no more digits after the dot
         if (firstNumber[firstNumber.length - 1] === '.') {
             firstNumber = String(Math.round(+firstNumber));
             out.textContent = firstNumber;
+        }
+        if (firstNumber === '' && key === '-') {
+            firstNumber = key;
+            out.textContent = firstNumber;
+            return;
         }
         sign = key;
         out.textContent += ' ' + key + ' ';

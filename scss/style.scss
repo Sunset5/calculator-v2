@@ -71,3 +71,9 @@ body {
         }
     }
 }
+
+@media (max-width: 400px) {
+    .calculator {
+        margin: 25px auto 0;
+    }
+}
