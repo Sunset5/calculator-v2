@@ -86,8 +86,17 @@ document.querySelector('.buttons').onclick = (event) => {
         // filling in the first number
         if (secondNumber === '' && sign === '') {
             if (key === '.' && firstNumber.includes('.')) return; // if there is already one point, then it is no longer possible
-            else if (key === '.') firstNumber += '0'; // adds 0 if it puts the first point
-            if (out.textContent.includes('0') && !out.textContent.includes('.') && key === '0') return; // if he wants to put more than one zero and there is no point
+            else if (key === '.' && out.textContent === '') {
+                firstNumber += '0'; // adds 0 if it puts the first point
+                out.textContent += '0';
+            }
+            if (firstNumber[0] === '-' && firstNumber[1] === '0' && !firstNumber.includes('.') && key === '0' && key !== '.') return; // if he wants to put more than one zero and there is no point
+            else if (!firstNumber.includes('.') && firstNumber[1] === '0' && key !== '0' && key !== '.') {
+                firstNumber = firstNumber.slice(0, firstNumber.length - 1);
+                firstNumber += key;
+                out.textContent = firstNumber;
+                return;
+            }
             firstNumber += key;
             out.textContent += key;
         }
@@ -137,28 +146,45 @@ document.querySelector('.buttons').onclick = (event) => {
     }
 
     // Calculation
-    if (key === '=' && finishSign || action.includes(key) && secondNumber !== '' && finishSign) {
+    if (key === '=' || action.includes(key) && secondNumber !== '' && finishSign) {
         // if after the first input of the number presses the sign
         if (secondNumber === '') secondNumber = firstNumber;
         // calculation and display
         switch (sign) {
             case '+':
-                if (String((+firstNumber + +secondNumber)).length >= 13) return; // out limit of 13 characters
-                firstNumber = +firstNumber + +secondNumber;
+                // out limit of 13 character and rounding
+                if (String((+firstNumber + +secondNumber)).length >= 13 && !String(+firstNumber + +secondNumber).includes('.')) return;
+                else {
+                    console.log(+firstNumber);
+                    console.log(+secondNumber);
+                    firstNumber = +firstNumber + +secondNumber;
+                    firstNumber = firstNumber.toString();
+                    let i = firstNumber.length - firstNumber.split('.')[0].length - 1;
+                    while (firstNumber.length >= 13 || firstNumber[i] === '0' && i !== 0) {
+                        firstNumber = (+firstNumber).toFixed(i - firstNumber.split('.')[0].length - 1); // rounding if the result has a dot or many zeros at the end
+                        i--;
+                    }
+                }
                 break;
             case '-':
-                if (String((firstNumber - secondNumber)).length >= 13) return; // out limit of 13 characters
                 firstNumber -= secondNumber;
                 break;
             case 'X':
-                if (String((firstNumber * secondNumber)).length >= 13) return; // out limit of 13 characters
-                firstNumber *= secondNumber;
-                break;
+                // out limit of 13 character and rounding
+                if (String((firstNumber * secondNumber)).length >= 13 && !String(firstNumber * secondNumber).includes('.')) return;
+                else {
+                    firstNumber *= secondNumber;
+                    firstNumber = firstNumber.toString();
+                    let i = firstNumber.length - firstNumber.split('.')[0].length - 1;
+                    while (firstNumber.length >= 13 || firstNumber[i] === '0') {
+                        firstNumber = (+firstNumber).toFixed(i - firstNumber.split('.')[0].length - 1); // rounding if the result has a dot or many zeros at the end
+                        i--;
+                    }
+                    break;
+                }
             case '/':
-                if (String((firstNumber / secondNumber)).length >= 13) return; // out limit of 13 characters
-                firstNumber /= secondNumber;
-                // when div on 0 (infinity)
-                if (firstNumber !== firstNumber || firstNumber === Infinity) {
+                // when div on 0 (NaN and Infinity)
+                if (firstNumber / secondNumber !== firstNumber / secondNumber || firstNumber / secondNumber === Infinity) {
                     out.textContent = 'Ошибка';
                     firstNumber = '';
                     secondNumber = '';
@@ -167,9 +193,20 @@ document.querySelector('.buttons').onclick = (event) => {
                     finishSign = false;
                     return;
                 }
+                // out limit of 13 character and rounding
+                if (String(firstNumber / secondNumber).length >= 13) {
+                    firstNumber /= secondNumber;
+                    firstNumber = firstNumber.toString();
+                    let i = firstNumber.length - firstNumber.split('.')[0].length - 1;
+                    while (firstNumber.length >= 13 || firstNumber[i] === '0' && i !== 0) {
+                        firstNumber = (+firstNumber).toFixed(i - firstNumber.split('.')[0].length - 1); // rounding if the result has a dot or many zeros at the end
+                        i--;
+                    }
+                }
                 break;
         }
         firstNumber = String(firstNumber);
+        console.log(firstNumber, typeof firstNumber, sign, typeof sign, secondNumber, typeof secondNumber, out.textContent, typeof out.textContent, finish);
         out.textContent = firstNumber;
         finish = true;
         finishSign = false; // Makes it possible to calculate by pressing the second sign
@@ -178,12 +215,25 @@ document.querySelector('.buttons').onclick = (event) => {
     // Input a sign
     if (action.includes(key) && !finishSign) {
         if (firstNumber === '' && key !== '-') firstNumber = out.textContent; // if he immediately presses the sign when the result is 0
-        // rounding the first number if there are no more digits after the dot
-        if (firstNumber[firstNumber.length - 1] === '.') {
-            firstNumber = String(Math.round(+firstNumber));
+        // rounding the first number if there are no more digits after the dot or only zeros
+        if (firstNumber[firstNumber.length - 1] === '.' || firstNumber[firstNumber.length - 1] === '0') {
+            // firstNumber = firstNumber.toString();
+            let i = firstNumber.length - firstNumber.split('.')[0].length - 1;
+            console.log(0, i, firstNumber.length, firstNumber)
+            while (firstNumber.length >= 13 || firstNumber[i] === '0') {
+                console.log(1, i, firstNumber.length, firstNumber)
+
+                firstNumber = (+firstNumber).toFixed(i - firstNumber.split('.')[0].length - 1); // rounding if the result has a dot or many zeros at the end
+                i--;
+                console.log(2, i, firstNumber.length, firstNumber)
+
+            }
+            // firstNumber = String(Math.round(+firstNumber));
             out.textContent = firstNumber;
         }
-        if (firstNumber === '' && key === '-') {
+        // possibility to add a minus sign to the first number at the beginning of calculation
+        if (firstNumber[0] === '-' && !digit.includes(firstNumber[1])) return;
+        else if (firstNumber === '' && key === '-') {
             firstNumber = key;
             out.textContent = firstNumber;
             return;
